@@ -1,0 +1,80 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.33.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: d943e7f14921d821b0a4953d3738e3697157ef2489b594ebb017b1d0eaa78304
+
+name:           voronoi
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/voronoi#readme>
+homepage:       https://github.com/githubuser/voronoi#readme
+bug-reports:    https://github.com/githubuser/voronoi/issues
+author:         Author name here
+maintainer:     example@example.com
+copyright:      2020 Author name here
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/githubuser/voronoi
+
+library
+  exposed-modules:
+      LibVoronoi
+  other-modules:
+      Paths_voronoi
+  hs-source-dirs:
+      src
+  build-depends:
+      JuicyPixels
+    , array
+    , base >=4.7 && <5
+    , hgeometry
+    , optparse-applicative
+    , random
+    , transformers
+  default-language: Haskell2010
+
+executable voronoi
+  main-is: Main.hs
+  other-modules:
+      Paths_voronoi
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      JuicyPixels
+    , array
+    , base >=4.7 && <5
+    , hgeometry
+    , optparse-applicative
+    , random
+    , transformers
+    , voronoi
+  default-language: Haskell2010
+
+test-suite voronoi-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_voronoi
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      JuicyPixels
+    , array
+    , base >=4.7 && <5
+    , hgeometry
+    , optparse-applicative
+    , random
+    , transformers
+    , voronoi
+  default-language: Haskell2010
