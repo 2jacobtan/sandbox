@@ -1,8 +1,8 @@
 module Main where
 
 import LibVoronoi
-
 import Options.Applicative
+import Data.Function ((&))
 
 data Config = Config
   { outfile :: String
@@ -48,7 +48,9 @@ main = do
           ( fullDesc
             <> progDesc "compute pixel stats by voronoi cell"
             <> header "voronoi" )
-  imageCreator (x opts) (y opts) (cutoff opts) (outfile opts)
-  where
+  let randArray = mkRandArray (x opts) (y opts) (cutoff opts)
+  mkImage (x opts) (y opts) (cutoff opts) randArray
+    & writePng (outfile opts)
+
 
 

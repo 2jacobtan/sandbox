@@ -7,8 +7,24 @@ import System.Random
 import GHC.Word
 import Data.List (unfoldr)
 import Codec.Picture
-
 import Data.Array
+
+import           Algorithms.Geometry.DelaunayTriangulation.DivideAndConqueror
+import           Algorithms.Geometry.DelaunayTriangulation.Types
+import           Control.Lens
+import           Data.Data
+import           Data.Ext
+import           Data.Geometry
+import           Data.Geometry.Ipe
+import qualified Data.List.NonEmpty as NonEmpty
+import           Data.PlaneGraph
+import           Data.PlanarGraph as PG
+import           Data.Semigroup
+import           Data.Yaml.Util
+import           Options.Applicative
+-- import           Test.QuickCheck
+-- import           Test.QuickCheck.HGeometryInstances ()
+
 
 someFunc :: IO ()
 someFunc = putStrLn "someFunc"
@@ -20,23 +36,52 @@ someFunc = putStrLn "someFunc"
 -- is there a way to do this actually quickly?
 -- if i just iterate over the array it takes forever.
 
--- we randomly generate an image of sparse points
--- by first setting up a monadic random number generator
+-- to have something to work with,
+-- we randomly generate an image of sparse points, represented as an one-dimensional array of bools, of length x*y
 
--- imageCreator :: String -> IO ()
--- imageCreator path = writePng path $ generateImage pixelRenderer 250 300
---    where pixelRenderer x y = PixelRGB8 (fromIntegral x) (fromIntegral y) 128
+mkRandArray :: Int -> Int -> Int -> Array Int Bool
+mkRandArray imgX imgY cutoff = listArray (0, imgX * imgY) $
+                               ((< cutoff) . fromIntegral)
+                               <$> (randoms (mkStdGen 137) :: [Word16])
 
-imageCreator :: Int -> Int -> Int -> String -> IO ()
-imageCreator imgX imgY cutoff path = do
-  let myrands = listArray (0, imgX * imgY) (randoms (mkStdGen 137) :: [Word16])
-      pixelRenderer x y = 
-        if (fromIntegral $ myrands ! (x*y)) < cutoff
-        then PixelRGB8 0 0 0
-        else PixelRGB8 255 255 255
-  writePng path $ generateImage pixelRenderer imgX imgY
+-- so we can eyeball it, our intermediate representation is a JuicyPixels 8-bit RGB bitmap suitable for outputting to PNG
+
+mkImage :: Int -> Int -> Int -> Array Int Bool -> Image PixelRGB8
+mkImage imgX imgY cutoff myrands = do
+  let pixelRenderer x y = 
+        if (myrands ! (y * imgX + x))
+        then PixelRGB8 255 255 255
+        else PixelRGB8 0 0 0
+  generateImage pixelRenderer imgX imgY
+
+-- some stats on the original image
+arrayStats :: Array Int Bool -> String
+arrayStats ary = unlines [ "* stats on the original array:"
+                         , show lit ++ " pixels are lit" ]
+  where lit = length (filter id 
+    
+
+-- given an image file, we can now compute the Delaunay triangulation
+-- and from the Delaunay triangulation we can compute the Voronoi diagram
+
+-- see also
+-- https://github.com/noinia/hgeometry/tree/master/hgeometry-examples/src/Demo/GeneratePlanarSubdivisions.hs
+
+
+-- once we have the Voronoi diagram we can compute the 
 
 imageValues = ()
 
+
+-- algorithm:
+
+-- given the Voronoi diagram, color the map uniquely, so that each region's innards are painted that region's colour.
+-- the flood-fill algorithm is O(n) in the number of pixels
+-- https://en.wikipedia.org/wiki/Flood_fill#:~:text=Flood%20fill%2C%20also%20called%20seed,in%20a%20multi%2Ddimensional%20array.
+
+-- then, for each point in the input image of n pixels, look up the color of the painted pixel in the Voronoi map.
+-- this lookup should be O(n * 1)
+
+-- any point which falls on an edge may be more accurately resolved using authoritative evaluation against the voronoi plane
 
 

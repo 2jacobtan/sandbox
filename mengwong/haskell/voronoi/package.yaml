@@ -27,6 +27,19 @@ dependencies:
 - transformers
 - array
 - optparse-applicative
+- hgeometry-combinatorial
+- hgeometry-ipe
+- lens
+- containers
+- vinyl
+- semigroups
+- text
+- hexpat
+- bytestring
+- directory
+- time
+- QuickCheck
+- MonadRandom
 
 library:
   source-dirs: src
