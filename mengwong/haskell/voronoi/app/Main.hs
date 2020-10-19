@@ -49,6 +49,7 @@ main = do
             <> progDesc "compute pixel stats by voronoi cell"
             <> header "voronoi" )
   let randArray = mkRandArray (x opts) (y opts) (cutoff opts)
+  putStrLn (arrayStats randArray)
   mkImage (x opts) (y opts) (cutoff opts) randArray
     & writePng (outfile opts)
 
